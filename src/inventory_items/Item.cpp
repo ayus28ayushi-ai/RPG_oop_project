@@ -6,9 +6,32 @@ int Item::itemCount = 0;
 // constructors and destructors
 Item::~Item(){}
 Item::Item(string name, string type, int power) {
-    itemName = name;
-    itemType = type;
-    itemPower = power;
+
+    if (name != "") {
+        itemName = name;
+    } 
+    else {
+        cout << "Invalid name, using None" << endl;
+        itemName = "None";
+    }
+
+    // validation for the type since it must be weapon or potion
+    if (type == "weapon" || type == "potion") {
+        itemType = type;
+    } 
+    else {
+        cout << "Invalid type (use weapon or potion), using potion" << endl;
+        itemType = "potion";
+    }
+ 
+    // power cannot be negative
+    if (power >= 0) {
+        itemPower = power;
+    } 
+    else {
+        cout << "Invalid power (cannot be negative), using 0" << endl;
+        itemPower = 0;
+    }
 
     if (name != "None") {
         itemCount++;
@@ -45,6 +68,24 @@ ostream& operator<<(ostream& out, const Item& item) {
 
 //input operator overloading function
 istream& operator>>(istream& in, Item& item) {
-    in >> item.itemName >> item.itemType >> item.itemPower;
+    string name, type;
+    int power;
+    in >> name >> type >> power;
+ 
+    if (!in) {
+        return in;
+    }
+ 
+    // the type must be weapon or potion and the power cannot be negative
+    if ((type != "weapon" && type != "potion") || power < 0) {
+        cout << "Invalid item input" << endl;
+        in.setstate(ios::failbit);
+        return in;
+    }
+ 
+    // everything is valid, so the item is changed
+    item.itemName = name;
+    item.itemType = type;
+    item.itemPower = power;
     return in;
 }

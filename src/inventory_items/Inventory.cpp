@@ -1,10 +1,15 @@
 #include "../../include/inventory_items/Inventory.h"
-#include <cstdlib>
 using namespace std;
 
 // constructor 
 Inventory::Inventory(int cap) {
-    capacity = cap;
+    // validating the cappacity
+    if (cap >= 1 && cap <= 100) {
+        capacity = cap;
+    } else {
+        cout << "Invalid capacity (use 1 to 100), using 10" << endl;
+        capacity = 10;
+    }
     count = 0;
     items = new Item[capacity];
 }
@@ -35,6 +40,7 @@ bool Inventory::isFull() const {
 
 // removes the item at the position and moves further right items to left
 bool Inventory::removeAt(int position) {
+    // checking the bounds
     if (position < 0 || position >= count) {
         return false;
     }
@@ -61,8 +67,11 @@ Inventory& Inventory::operator=(const Inventory& other) {
 
 // add operator overloading function  
 Inventory& Inventory::operator+=(const Item& item) {
-    if (count == capacity) {
-        cout << "Inventory full!" << endl;
+    // checking for empty item
+    if (item.getName() == "None") {
+        cout << "Cannot add an empty item" << endl;
+    } else if (count == capacity) {
+        cout << "Inventory full!" << endl; // checking for saturated inventory capacity
     } else {
         items[count] = item;
         count++;
@@ -72,8 +81,9 @@ Inventory& Inventory::operator+=(const Item& item) {
 
 // subscript operator overloading function  
 Item& Inventory::operator[](int position) {
+    // checking the bounds
     if (position < 0 || position >= count) {
-        cerr << "Inventory error: position " << position << " is out of range" << endl;
+        cout << "Position " << position << " is out of range" << endl;
         abort();
     }
     return items[position];
@@ -81,8 +91,9 @@ Item& Inventory::operator[](int position) {
 
 // subscript operator overloading function (read only)
 const Item& Inventory::operator[](int position) const {
+    // checking the bounds
     if (position < 0 || position >= count) {
-        cerr << "Inventory error: position " << position << " is out of range" << endl;
+        cout << "Position " << position << " is out of range" << endl;
         abort();
     }
     return items[position];
@@ -90,6 +101,7 @@ const Item& Inventory::operator[](int position) const {
 
 // equality operator overloading function
 bool Inventory::operator==(const Inventory& other) const {
+    // validating the size
     if (count != other.count) {
         return false;
     }
@@ -110,9 +122,29 @@ bool Inventory::operator!=(const Inventory& other) const {
 istream& operator>>(istream& in, Inventory& bag) {
     int howMany;
     in >> howMany;
+ 
+    if (!in) {
+        return in;
+    }
+    // checking for invalid negative number of items
+    if (howMany < 0) {
+        cout << "Invalid number of items" << endl;
+        return in;
+    }
+ 
+    // validating for the bag to have enough free space
+    if (howMany > bag.capacity - bag.count) {
+        cout << "Not enough space in the bag for " << howMany << " items" << endl;
+        return in;
+    }
+ 
     for (int i = 0; i < howMany; i++) {
         Item item;
         in >> item;
+        
+        if (!in) {
+            return in;
+        }
         bag += item;
     }
     return in;
