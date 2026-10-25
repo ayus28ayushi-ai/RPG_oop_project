@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "../../include/engine/Game.h"
 #include <cstdlib>
 #include <ctime>
 
@@ -15,7 +15,8 @@ int calcCritDamage(int atk, int def) {
 using DamageFunc = int(*)(int, int);
 
 Game::Game()
-    : dungeon_(6),
+    : hero_("Hero"),
+      dungeon_(6),
       currentRoom_(0),
       previousRoom_(0),
       turnCount_(0)
@@ -132,14 +133,14 @@ void Game::run(){
                                             damageFn = calcCritDamage;
                                             std::cout<<"CRITICAL HIT!"<<std::endl;
                                         }
-                                        int heroDmg = damageFn(hero_.attackPower(), mon.stats().defense());
+                                        int heroDmg = damageFn(hero_.attackPower(), mon.stats().getDefence());
                                         mon.takeDamage(heroDmg);
                                         std::cout<<"You hit "<<mon.name()<<" for "<<heroDmg<<" damage."<<std::endl;
 
                                         if (!mon.isAlive()) {
                                             std::cout << "You defeated " << mon.name() << "!\n";
                                             mon.markDefeated();
-                                            hero_.gainXp(mon.xpReward());
+                                            hero_.gainXP(mon.xpReward());
                                             hero_.pickUp(mon.loot());
 
                                             if (currentRoom_ == 5) {
@@ -154,7 +155,7 @@ void Game::run(){
                                             break;
                                         }
 
-                                        int monsterDmg = calcNormalDamage(mon.stats().attack(), hero_.stats().defense());
+                                        int monsterDmg = calcNormalDamage(mon.stats().getAttack(), hero_.getStats().getDefence());
                                         hero_.takeDamage(monsterDmg);
                                         std::cout<<mon.name()<<" struck back for "<<monsterDmg<<" damage.";
 
@@ -170,12 +171,12 @@ void Game::run(){
                                     }
                                     case 1:{
                                         if(hero_.usePotion()){ // fixed: respect return value
-                                            std::cout<<"Potion used. Current HP: "<<hero_.stats().hp()<<"/"<<hero_.stats().maxHp()<<std::endl;
+                                            std::cout<<"Potion used. Current HP: "<<hero_.getStats().getHp()<<"/"<<hero_.getStats().getMaxHp()<<std::endl;
                                         }else{
                                             std::cout<<"No potions available."<<std::endl;
                                         }
 
-                                        int monsterDmg = calcNormalDamage(mon.stats().attack(), hero_.stats().defense());
+                                        int monsterDmg = calcNormalDamage(mon.stats().getAttack(), hero_.getStats().getDefence());
                                         hero_.takeDamage(monsterDmg);
                                         std::cout<<mon.name()<<" attacked you for "<<monsterDmg<<" damage while you drank!"<<std::endl;
 
@@ -199,7 +200,7 @@ void Game::run(){
 
                                         std::cout<<"Escape failed! "<<mon.name()<<" blocked your exit!"<<std::endl;
 
-                                        int monsterDmg = calcNormalDamage(mon.stats().attack(), hero_.stats().defense());
+                                        int monsterDmg = calcNormalDamage(mon.stats().getAttack(), hero_.getStats().getDefence());
                                         hero_.takeDamage(monsterDmg);
                                         std::cout<<mon.name()<<" hit you for "<<monsterDmg<<" damage!"<<std::endl;
 
@@ -223,7 +224,7 @@ void Game::run(){
                 
                 case 4:{
                     std::cout<<"--------Hero Inventory---------"<<std::endl;
-                    std::cout<<hero_.bag()<<std::endl;
+                    std::cout<<hero_.getBag()<<std::endl;
                     break;
                 }
                 
@@ -231,9 +232,9 @@ void Game::run(){
                 case 5:{
 
                     std::cout<<"--------Hero Inventory---------"<<std::endl;
-                    std::cout<<hero_.bag()<<std::endl;
+                    std::cout<<hero_.getBag()<<std::endl;
 
-                    Inventory tempBag = hero_.bag(); // fixed: copy BEFORE equip so name stays valid
+                    Inventory tempBag = hero_.getBag(); // fixed: copy BEFORE equip so name stays valid
                     int wep;
                     std::cout<<"Enter slot number: ";
                     std::cin>>wep;
@@ -245,7 +246,7 @@ void Game::run(){
                     }
 
                     if(hero_.equip(wep)){
-                        std::cout << "Weapon wielded: " << tempBag[wep].name() << std::endl;
+                        std::cout << "Weapon wielded: " << tempBag[wep].getName() << std::endl;
                     }
                     else std::cout<<"Slot out of bounds or item not a weapon."<<std::endl;
                     break;
@@ -254,7 +255,7 @@ void Game::run(){
                 case 6:{
                     if(hero_.usePotion()){
                         std::cout<<"Potion used. Hero healed."<<std::endl;
-                        std::cout<<"Updated HP: "<<hero_.stats().hp()<<"/"<<hero_.stats().maxHp()<<std::endl;
+                        std::cout<<"Updated HP: "<<hero_.getStats().getHp()<<"/"<<hero_.getStats().getMaxHp()<<std::endl;
                     }
                     else{
                         std::cout<<"No potions available."<<std::endl;
@@ -264,13 +265,13 @@ void Game::run(){
                
                 case 7:{
                     if(dungeon_[currentRoom_].hasLoot()){
-                        if(hero_.bag().isFull()){
+                        if(hero_.getBag().isFull()){
                             std::cout<<"Inventory is full. Cannot pick up more items."<<std::endl;
                         }
                         else{
                             Item lootItem = dungeon_[currentRoom_].takeLoot();
                             hero_.pickUp(lootItem);
-                            std::cout << "You picked up: " << lootItem.name() << "."<<std::endl;
+                            std::cout << "You picked up: " << lootItem.getName() << "."<<std::endl;
                         }
 
                     }

@@ -2,9 +2,8 @@
 #define MONSTER_H
 
 #include <iostream>
-#include <string>
-#include "Item.h"
-#include "Stats.h"
+#include "../inventory_items/Item.h"
+#include "../character/Stats.h"
 
 
 class Monster {

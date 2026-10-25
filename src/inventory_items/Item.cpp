@@ -15,13 +15,13 @@ Item::Item(string name, string type, int power) {
         itemName = "None";
     }
 
-    // validation for the type since it must be weapon or potion
-    if (type == "weapon" || type == "potion") {
+    // validation for the type since it must be WEAPON or POTION
+    if (type == "WEAPON" || type == "POTION") {
         itemType = type;
     } 
     else {
-        cout << "Invalid type (use weapon or potion), using potion" << endl;
-        itemType = "potion";
+        cout << "Invalid type (use WEAPON or POTION), using POTION" << endl;
+        itemType = "POTION";
     }
  
     // power cannot be negative
@@ -76,8 +76,8 @@ istream& operator>>(istream& in, Item& item) {
         return in;
     }
  
-    // the type must be weapon or potion and the power cannot be negative
-    if ((type != "weapon" && type != "potion") || power < 0) {
+    // the type must be WEAPON or POTION and the power cannot be negative
+    if ((type != "WEAPON" && type != "POTION") || power < 0) {
         cout << "Invalid item input" << endl;
         in.setstate(ios::failbit);
         return in;

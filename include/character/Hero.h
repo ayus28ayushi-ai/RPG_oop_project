@@ -5,9 +5,9 @@
 #ifndef OOPS_HERO_H
 #define OOPS_HERO_H
 #include <string>
-#include "Inventory.h"
+#include "../inventory_items/Inventory.h"
 #include "Stats.h"
-#include "Item.h"
+#include "../inventory_items/Item.h"
 #include <iostream>
 
 class Hero {
@@ -32,7 +32,7 @@ public:
     Hero& heal(int amount);
     Hero& gainXP(int amount);
 
-    void equip(int index);
+    bool equip(int index);
     bool usePotion();
     int attackPower() const;
     void takeDamage(int damage);

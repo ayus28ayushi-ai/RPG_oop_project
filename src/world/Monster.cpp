@@ -1,4 +1,4 @@
-#include "Monster.h"
+#include "../../include/world/Monster.h"
 using namespace std;
 
 int Monster::defeatedCount = 0;
@@ -6,7 +6,7 @@ int Monster::defeatedCount = 0;
 // values that make no sense are corrected
 Monster::Monster(const string& name, int hp, int attack, int defense, int xpReward, const Item& loot)
     : monsterName(name == "" ? "Unknown" : name),
-      monsterStats(hp < 1 ? 1 : hp, attack < 0 ? 0 : attack, defense < 0 ? 0 : defense, 1),
+      monsterStats(hp < 1 ? 1 : hp, hp < 1 ? 1 : hp, attack < 0 ? 0 : attack, defense < 0 ? 0 : defense, 1),
       rewardXp(xpReward < 0 ? 0 : xpReward),
       monsterLoot(loot),
       counted(false) {}
@@ -25,7 +25,7 @@ void Monster::takeDamage(int n) {
     }
 }
 
-bool Monster::isAlive() const { return monsterStats.hp() > 0; }
+bool Monster::isAlive() const { return monsterStats.getHp() > 0; }
 
 // counts the monster once, and only when it is really dead
 void Monster::markDefeated() {

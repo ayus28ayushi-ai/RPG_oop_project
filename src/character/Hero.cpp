@@ -2,14 +2,13 @@
 // Created by P.C.V Saiteja on 23/10/26.
 //
 
-#include "../include/Hero.h"
-#include "incude/Item.h"
-#include "include/Inventory.h"
+#include "../../include/character/Hero.h"
+#include"../../include/inventory_items/Item.h"
 #include <string>
 
 int Hero::count = 0;
 
-Hero::Hero(std::string name)
+Hero::Hero( const std::string &name)
     :   name(name),
         experience(0),
         heroStats(40, 40, 6, 2, 1),
@@ -66,26 +65,27 @@ Hero& Hero::gainXP(int amount) {
 
     experience += amount;
 
-    if (experience >= heroStats.getLevel() * 40) {
+    while (experience >= heroStats.getLevel() * 40) {
         experience -= heroStats.getLevel() * 40;
         ++heroStats;
     }
     return *this;
 }
 
-void Hero::equip(int index) {
+bool Hero::equip(int index) {
     if (index < 0 || index >= heroBag.getSize()) {
         std::cerr << "Equipment index out of bounds" << std::endl;
-        return;
+        return false;
     }
 
     const Item &item = heroBag[index];
 
     if (item.getType() != "WEAPON") {
         std::cerr << "Equipment type not supported" << std::endl;
-        return;
+        return false;
     }
     equippedItem = item;
+    return true;
 }
 
 bool Hero::usePotion() {
@@ -113,7 +113,7 @@ std::ostream& operator<<(std::ostream& o, const Hero& hero) {
     o << "Hero: "<< hero.getName() << std::endl;
     o << "XP: " << hero.getExperience() << std::endl;
     o << hero.getStats();
-    o << "Attack Power: " << hero.attackPower();
+    o << "Attack Power: " << hero.attackPower() << std::endl;
     o << "Equipped Weapon: " << hero.equippedItem << std::endl;
     o << "Inventory:\n" << hero.getBag();
 

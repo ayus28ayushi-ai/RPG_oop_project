@@ -2,7 +2,7 @@
 // Created by P.C.V Saiteja on 23/10/26.
 //
 
-#include "../include/Stats.h"
+#include "../../include/character/Stats.h"
 #include <iostream>
 
 Stats::Stats(int hp, int maxHp, int attack, int defence, int level)
@@ -95,7 +95,7 @@ Stats Stats::operator++(int) {
 std::ostream& operator<<(std::ostream& o, const Stats& stats) {
     o << "Level: " << stats.getLevel() << std::endl;
     o << "HP: " << stats.getHp() << "/" << stats.getMaxHp() << std::endl;
-    o << "Attack: " << stats.getAttack();
+    o << "Attack: " << stats.getAttack() << std::endl;
     o << "Defence: " << stats.getDefence();
 
     return o;

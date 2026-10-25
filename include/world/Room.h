@@ -2,9 +2,9 @@
 #define ROOM_H
 
 #include <iostream>
-#include <string>
-#include "Item.h"
 #include "Monster.h"
+#include "../inventory_items/Item.h"
+
 
 
 const int NORTH = 0;

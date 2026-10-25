@@ -13,7 +13,7 @@ private:
     static int itemCount;
 public:
     // constructors and destructors
-    Item(std::string name = "None", std::string type = "potion", int power = 0);
+    Item(std::string name = "None", std::string type = "POTION", int power = 0);
     ~Item();
 
     // getters
